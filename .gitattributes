@@ -1,0 +1,5 @@
+* text=auto
+*.md text eol=lf
+*.norm text eol=lf
+*.yml text eol=lf
+*.jar filter=lfs diff=lfs merge=lfs -text

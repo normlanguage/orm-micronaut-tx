@@ -1,0 +1,5 @@
+build/
+.norm/
+*.nar
+*.pom
+*.sha256
