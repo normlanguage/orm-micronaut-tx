@@ -1,9 +1,9 @@
 Module module() {
   return module(
     name: "orm.micronaut.tx",
-    version: 1,
+    version: 2,
     exports: ["Transactional"],
-    dependencies: [exportedDependency(repository: "github", name: "orm.micronaut", version: 1)],
+    dependencies: [exportedDependency(repository: "github", name: "orm.micronaut", version: 2)],
     binding: jarBinding(
       target: mavenJar(
         group: "io.micronaut.data",
