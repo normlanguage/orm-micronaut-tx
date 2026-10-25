@@ -3,7 +3,7 @@ Module module() {
     name: "orm.micronaut.tx",
     version: 8,
     exports: ["Transactional"],
-    dependencies: [dependency(repository: "norm", name: "java.base", version: 1), exportedDependency(repository: "github", name: "orm.micronaut", version: 10), dependency(repository: "github", name: "micronaut.inject", version: 7), dependency(repository: "github", name: "micronaut.aop", version: 5)],
+    dependencies: [dependency(repository: "norm", name: "java.base", version: 1), exportedDependency(repository: "github", name: "orm.micronaut", version: 11), dependency(repository: "github", name: "micronaut.inject", version: 7), dependency(repository: "github", name: "micronaut.aop", version: 5)],
     binding: jarBinding(
       target: mavenJar(
         group: "io.micronaut.data",
@@ -20,6 +20,7 @@ Module module() {
     )
   )
 }
+
 
 
 
