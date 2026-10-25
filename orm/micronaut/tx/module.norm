@@ -1,16 +1,38 @@
 Module module() {
   return module(
     name: "orm.micronaut.tx",
-    version: 5,
+    version: 9,
     exports: ["Transactional"],
-    dependencies: [exportedDependency(repository: "github", name: "orm.micronaut", version: 5)],
+    dependencies: [dependency(repository: "norm", name: "java.base", version: 1), exportedDependency(repository: "github", name: "orm.micronaut", version: 14), dependency(repository: "github", name: "micronaut.inject", version: 12), dependency(repository: "github", name: "micronaut.aop", version: 7)],
     binding: jarBinding(
       target: mavenJar(
         group: "io.micronaut.data",
-        artifact: "micronaut-data-tx-hibernate",
-        version: "5.1.3", resolution: sha256("b5d90154cda837161d34987f01d7aa4154eb06f851a6651917c65385f4e46144")
+        artifact: "micronaut-data-tx",
+        version: "4.13.1", resolution: sha256("a57016e548632c47c92596ecff655acd73e7cf890d450f7edab153bdc1957824")
       ),
-      api: [jarType(name: "io.micronaut.transaction.annotation.Transactional", members: [])]
+      api: [
+        jarType(name: "io.micronaut.transaction.annotation.Transactional", members: []),
+        jarType(name: "io.micronaut.transaction.TransactionDefinition", members: []),
+        jarType(name: "io.micronaut.transaction.TransactionDefinition.Propagation", alias: "Propagation", members: []),
+        jarType(name: "io.micronaut.transaction.TransactionDefinition.Isolation", alias: "Isolation", members: []),
+        jarType(name: "io.micronaut.transaction.interceptor.TransactionalInterceptor", members: [])
+      ]
     )
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
