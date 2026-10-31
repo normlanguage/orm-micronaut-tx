@@ -1,7 +1,7 @@
-# orm-micronaut-tx 示例归属
+# 事务验证
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-本模块为 Micronaut ORM 桥接提供事务边界。可运行场景由 [micronaut-web](https://github.com/normlanguage/micronaut-web/tree/main/samples) 仓库的 `samples/` 目录负责；请通过该示例观察公开 API 的实际行为。
+[HTTP 应用](transactions/application.norm) 通过公开事务 API 验证依赖注入和 Hibernate/H2 提交、读取及回滚。使用 Node.js 运行[验收脚本](../scripts/verify-transactions.mjs)；Norm 不在 PATH 时设置 NORM_EXECUTABLE。
 
-模块身份与固定依赖见 [module.norm](../orm/micronaut/tx/module.norm)。
+[示例模块](transactions/module.norm) 定义正式依赖，[库模块](../orm/micronaut/tx/module.norm) 定义事务提供器。

@@ -1,6 +1,6 @@
 # orm.micronaut.tx Skill
 
-Use this skill to work with Norm module `orm.micronaut.tx` version 11. Use only declarations listed below.
+Use this skill to work with Norm module `orm.micronaut.tx` version 12. Use only declarations listed below.
 
 ## `orm.micronaut.tx`
 

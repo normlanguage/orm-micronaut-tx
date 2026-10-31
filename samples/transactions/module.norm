@@ -1,0 +1,1 @@
+Module module() { return module(name: "transaction.verification", version: 1, dependencies: [dependency(repository: "github", name: "micronaut.web", version: 11), dependency(repository: "github", name: "orm.micronaut.tx", version: 12), dependency(repository: "github", name: "h2.database", version: 3)]) }
