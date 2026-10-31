@@ -1,0 +1,179 @@
+package transaction.verification
+import micronaut.web.Micronaut
+import micronaut.web.Server
+import std.core.Exception
+import jakarta.inject.Inject
+import micronaut.http.annotation.Controller
+import micronaut.http.annotation.Get
+import micronaut.inject.context.annotation.Prototype
+import micronaut.web.DataSources
+import micronaut.web.hibernateJpa
+import micronaut.web.MicronautApplication
+import micronaut.web.MicronautConfig
+import micronaut.web.SchemaMode
+import orm.Column
+import orm.Entity
+import orm.GeneratedValue
+import orm.GenerationType
+import orm.Id
+import orm.Repository
+import orm.RepositoryContext
+import orm.micronaut.tx.Transactional
+import std.application.Application
+import std.application.applicationPackage
+import std.core.Result
+
+
+@Entity()
+class HelloEntity {
+  @Column(nullable: false)
+  String name
+
+  @Id()
+  @GeneratedValue(strategy: GenerationType.IDENTITY)
+  Long? id = null
+
+  HelloEntity(String name) {
+    this.name = name
+  }
+}
+
+@Prototype()
+class HelloRepository extends Repository<HelloEntity, Long> {
+  @Inject()
+  HelloRepository(RepositoryContext context) {
+    super(context)
+  }
+}
+
+@Prototype()
+class HelloService {
+  HelloRepository names
+
+  @Inject()
+  HelloService(HelloRepository names) {
+    this.names = names
+  }
+
+  @Transactional()
+  Result<String> hello(String name) {
+    if name.isEmpty() {
+      return Result.Err("Name is required")
+    }
+    HelloEntity saved = names.save(HelloEntity(name))
+    return Result.Ok("Hello, ${saved.name}!")
+  }
+}
+
+@Controller("/hello")
+class HelloController {
+  HelloService helloService
+
+  @Inject()
+  HelloController(HelloService helloService) {
+    this.helloService = helloService
+  }
+
+  @Get("/{name}")
+  String hello(String name) {
+    return switch helloService.hello(name) {
+      case Ok(String message) {
+        break message
+      }
+      case Err(String msg) {
+        break msg
+      }
+    }
+  }
+}
+
+public Application application() {
+  return MicronautApplication(config: MicronautConfig(micronaut: Micronaut(server: Server(port: 0)),
+    datasources: DataSources(),
+    jpa: hibernateJpa(
+      entityPackages: [applicationPackage()],
+      schema: SchemaMode.Update
+    )
+  ))
+}
+@Prototype()
+class TransactionVerificationService {
+  HelloRepository names
+
+  @Inject()
+  TransactionVerificationService(HelloRepository names) {
+    this.names = names
+  }
+
+  @Transactional()
+  Long create(String name) {
+    HelloEntity saved = names.save(HelloEntity(name))
+    names.flush()
+    Long? id = saved.id
+    if id == null {
+      throw Exception("Saved entity has no identity")
+    }
+    return id
+  }
+
+  @Transactional()
+  String read(Long id) {
+    HelloEntity? stored = names.find(id)
+    if stored == null {
+      throw Exception("Stored entity is absent")
+    }
+    return stored.name
+  }
+
+  @Transactional()
+  Long count() {
+    return names.count()
+  }
+
+  @Transactional()
+  Void rollback(String name) {
+    names.save(HelloEntity(name))
+    names.flush()
+    throw Exception("Intentional transaction rollback")
+  }
+}
+
+
+@Controller("/transactions")
+class TransactionVerificationController {
+  TransactionVerificationService service
+
+  @Inject()
+  TransactionVerificationController(TransactionVerificationService service) {
+    this.service = service
+  }
+
+
+  @Get("/create/{name}")
+  String create(String name) {
+    return "${service.create(name)}"
+  }
+
+  @Get("/read/{id}")
+  String read(Long id) {
+    return service.read(id)
+  }
+
+  @Get("/count")
+  String count() {
+    return "${service.count()}"
+  }
+
+  @Get("/rollback/{name}")
+  String rollback(String name) {
+    try {
+      service.rollback(name)
+    } catch Exception failure {
+      if failure.message != "Intentional transaction rollback" {
+        throw failure
+      }
+      return "rolled back"
+    }
+    return "rollback did not throw"
+  }
+}

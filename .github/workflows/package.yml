@@ -1,21 +1,33 @@
 name: Package
-
 on:
   pull_request:
   push:
     branches: [main]
-    tags:
-      - 'v*'
+    tags: ['v*']
   workflow_dispatch:
-
 permissions:
   contents: write
   id-token: write
   attestations: write
-
 jobs:
   package:
-    uses: normlanguage/registry/.github/workflows/package.yml@90b4d247fa4f5f2b620924d2cbc0553e89843700
-    with:
-      norm-version: 0.27.23
-
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - id: norm
+        uses: normlanguage/registry/.github/actions/setup-norm@90b4d247fa4f5f2b620924d2cbc0553e89843700
+        with:
+          version: 0.27.23
+      - id: package
+        uses: normlanguage/registry/.github/actions/package-module@90b4d247fa4f5f2b620924d2cbc0553e89843700
+        with:
+          module-path: orm/micronaut/tx
+          cache-directory: ~/.norm/cache/packages/github
+      - name: Verify Hibernate transactions over HTTP
+        env:
+          NORM_EXECUTABLE: ${{ steps.norm.outputs.executable }}
+        run: node scripts/verify-transactions.mjs
+      - uses: normlanguage/registry/.github/actions/publish-module@90b4d247fa4f5f2b620924d2cbc0553e89843700
+        with:
+          archive: ${{ steps.package.outputs.archive }}
+          version: ${{ steps.package.outputs.version }}
