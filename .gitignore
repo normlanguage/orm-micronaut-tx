@@ -3,3 +3,4 @@ build/
 *.nar
 *.pom
 *.sha256
+/orm/micronaut/tx/resources/META-INF/licenses/orm.micronaut.tx/LICENSE
