@@ -1,6 +1,6 @@
 # orm.micronaut.tx Skill
 
-Use this skill to work with Norm module `orm.micronaut.tx` version 9. Use only declarations listed below.
+Use this skill to work with Norm module `orm.micronaut.tx` version 11. Use only declarations listed below.
 
 ## `orm.micronaut.tx`
 
@@ -133,5 +133,4 @@ TransactionalInterceptor(__JarBindingToken token)
 Parameters:
 
 - `token`: `__JarBindingToken`
-
 
